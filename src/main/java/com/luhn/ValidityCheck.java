@@ -3,17 +3,20 @@ package com.luhn;
 import java.util.stream.*;
 import java.util.*;
 import java.util.regex.*;
+import java.time.format.*;
 
 public class ValidityCheck
 {
     public static Result isValid(String number)
     {
         try {
-            // Pattern pattern = Pattern.compile("")            
-            number = clean(number);
-            if(number.length()!=10)
+            Pattern pnrPattern = Pattern.compile("((1(8|9)|2\\d)?)(?<date>\\d{6})[-+]?\\d{4}");
+            var matcher = pnrPattern.matcher(number);
+            
+            if(!matcher.find())
                 return Result.Invalid;
-            if(LuhnCheck(number))
+            
+                if(LuhnCheck(clean(number)))
                 return Result.ValidPersonnummer;
         } catch (Exception e) {
             return Result.Invalid;
@@ -49,6 +52,19 @@ public class ValidityCheck
 
         return t2 % 10 == 0;
     }
+
+    public static class DateValidator {
+    
+        public boolean isValid(String dateStr) {
+            try {
+                java.time.LocalDate.parse(dateStr, DateTimeFormatter.BASIC_ISO_DATE);
+            } catch (DateTimeParseException e) {
+                return false;
+            }
+            return true;
+        }
+    }
+
 }
 
 enum NumberTypes {
@@ -69,6 +85,7 @@ class Result {
     public static Result ValidSamordningsnummer = new Result(false, NumberTypes.Samordningsnummer);
     public static Result ValidOrganisationsnummer = new Result(false, NumberTypes.Organisationsnummer);
 
+    @Override
     public boolean equals(Object o) {
          if (o == this) {
             return true;
@@ -83,3 +100,5 @@ class Result {
         return this.IsValid == r.IsValid && this.NumberType == r.NumberType;
     }
 }
+
+

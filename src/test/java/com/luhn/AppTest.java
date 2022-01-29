@@ -71,15 +71,15 @@ public class AppTest
     @Test
     public void validSamordningsNrFromUppgift()
     {
-        assertEquals(Result.ValidPersonnummer, ValidityCheck.isValid("190910799824"));
+        assertEquals(Result.ValidSamordningsnummer, ValidityCheck.isValid("190910799824"));
     }
 
     @Test
     public void validOrgnrNrFromUppgift()
     {
-        assertEquals(Result.ValidPersonnummer, ValidityCheck.isValid("556614-3185"));
-        assertEquals(Result.ValidPersonnummer, ValidityCheck.isValid("16556601-6399"));
-        assertEquals(Result.ValidPersonnummer, ValidityCheck.isValid("262000-1111"));
-        assertEquals(Result.ValidPersonnummer, ValidityCheck.isValid("857202-7566"));
+        assertEquals(Result.ValidOrganisationsnummer, ValidityCheck.isValid("556614-3185"));
+        assertEquals(Result.ValidOrganisationsnummer, ValidityCheck.isValid("16556601-6399"));
+        assertEquals(Result.ValidOrganisationsnummer, ValidityCheck.isValid("262000-1111"));
+        assertEquals(Result.ValidOrganisationsnummer, ValidityCheck.isValid("857202-7566"));
     }
 }
