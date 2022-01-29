@@ -7,7 +7,7 @@ import java.time.format.*;
 
 public class ValidityCheck
 {
-    private static Pattern PnrPattern = Pattern.compile("^(?<cent>(1(8|9)|2\\d)?)(?<year>\\d{2})(?<month>0\\d|1[012]|[2-9]\\d)(?<day>[06][1-9]|[1278]\\d|[39][01])[-+]?(?<last>\\d{4})$");
+    private static Pattern PnrPattern = Pattern.compile("^(?<cent>(1[689]|2\\d)?)(?<year>\\d{2})(?<month>0\\d|1[012]|[2-9]\\d)(?<day>[06][1-9]|[1278]\\d|[39][01]|\\d{2})[-+]?(?<last>\\d{4})$");
 
     public static Result check(String number)
     {
@@ -16,16 +16,24 @@ public class ValidityCheck
         if(!matcher.find())
             return Result.Invalid;
 
+        var cent = matcher.group("cent");
         var day = matcher.group("day");
         var month = matcher.group("month");
 
         if(!LuhnCheck(matcher.group("year") + month + day + matcher.group("last")))
             return Result.Invalid;
         
+        if(month.compareTo("20") >= 0) {
+            if(!(cent.isEmpty() || cent.compareTo("16") == 0))
+                return Result.Invalid;
+
+            return Result.ValidOrganisationsnummer;
+        }
+
         if(day.compareTo("61") >= 0) 
             day = (Integer.parseInt(matcher.group("day")) - 60) + "";
 
-        if(!DateValidator.isValid(matcher.group("cent") + matcher.group("year") + matcher.group("month") + day))
+        if(!DateValidator.isValid(cent + matcher.group("year") + matcher.group("month") + day))
             return Result.Invalid;
 
         if(Integer.parseInt(matcher.group("day")) >= 61)

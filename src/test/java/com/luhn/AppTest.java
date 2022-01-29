@@ -74,8 +74,8 @@ public class AppTest
     @Test
     public void validOrgnrNrFromUppgift()
     {
-        assertEquals(Result.ValidOrganisationsnummer, ValidityCheck.check("556614-3185"));
         assertEquals(Result.ValidOrganisationsnummer, ValidityCheck.check("16556601-6399"));
+        assertEquals(Result.ValidOrganisationsnummer, ValidityCheck.check("556614-3185"));
         assertEquals(Result.ValidOrganisationsnummer, ValidityCheck.check("262000-1111"));
         assertEquals(Result.ValidOrganisationsnummer, ValidityCheck.check("857202-7566"));
     }
