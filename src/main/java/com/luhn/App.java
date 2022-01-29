@@ -10,7 +10,7 @@ public class App
     {
         for (String number : args) 
         {
-            var result = ValidityCheck.isValid(number);
+            var result = ValidityCheck.check(number);
             System.out.println( String.format("%s is %s.",result.IsValid ?"valid":"invalid"));
         }
     }

@@ -7,35 +7,31 @@ import java.time.format.*;
 
 public class ValidityCheck
 {
-    public static Result isValid(String number)
+    private static Pattern PnrPattern = Pattern.compile("^(?<cent>(1(8|9)|2\\d)?)(?<year>\\d{2})(?<month>0\\d|1[012]|[2-9]\\d)(?<day>[06][1-9]|[1278]\\d|[39][01])[-+]?(?<last>\\d{4})$");
+
+    public static Result check(String number)
     {
-        try {
-            Pattern pnrPattern = Pattern.compile("((1(8|9)|2\\d)?)(?<date>\\d{6})[-+]?\\d{4}");
-            var matcher = pnrPattern.matcher(number);
-            
-            if(!matcher.find())
-                return Result.Invalid;
+        var matcher = PnrPattern.matcher(number.trim());
 
-            if(!DateValidator.isValid(matcher.group("date")))
-                return Result.Invalid;
-            
-            if(LuhnCheck(clean(number)))
-                return Result.ValidPersonnummer;
-
-            } catch (Exception e) {
+        if(!matcher.find())
             return Result.Invalid;
-        }
-        return Result.Invalid;
-    }
 
-    private static String clean(String number)
-    {
-        number = number.trim().replace("-", "").replace("+", "");
+        var day = matcher.group("day");
+        var month = matcher.group("month");
 
-        if (number.length() > 10)
-            number = number.substring(2);
+        if(!LuhnCheck(matcher.group("year") + month + day + matcher.group("last")))
+            return Result.Invalid;
+        
+        if(day.compareTo("61") >= 0) 
+            day = (Integer.parseInt(matcher.group("day")) - 60) + "";
 
-        return number;
+        if(!DateValidator.isValid(matcher.group("cent") + matcher.group("year") + matcher.group("month") + day))
+            return Result.Invalid;
+
+        if(Integer.parseInt(matcher.group("day")) >= 61)
+            return Result.ValidSamordningsnummer;
+            
+        return Result.ValidPersonnummer;
     }
 
     private static boolean LuhnCheck(String number)
@@ -58,14 +54,21 @@ public class ValidityCheck
     }
 
     public static class DateValidator {
-    
+        private final static String Today = DateTimeFormatter.BASIC_ISO_DATE.format(java.time.LocalDate.now()); 
+
         public static boolean isValid(String dateStr) {
+            if(dateStr.length()<8)
+                dateStr = Today.substring(0,1)+dateStr;
+
+            if(dateStr.compareTo(Today)>0)
+                dateStr = (Integer.parseInt(Today.substring(0,1))-1) + dateStr;
+
             try {
                 java.time.LocalDate.parse(dateStr, DateTimeFormatter.BASIC_ISO_DATE);
+                return true;
             } catch (DateTimeParseException e) {
                 return false;
             }
-            return true;
         }
     }
 
