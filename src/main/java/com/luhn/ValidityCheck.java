@@ -15,10 +15,14 @@ public class ValidityCheck
             
             if(!matcher.find())
                 return Result.Invalid;
+
+            if(!DateValidator.isValid(matcher.group("date")))
+                return Result.Invalid;
             
-                if(LuhnCheck(clean(number)))
+            if(LuhnCheck(clean(number)))
                 return Result.ValidPersonnummer;
-        } catch (Exception e) {
+
+            } catch (Exception e) {
             return Result.Invalid;
         }
         return Result.Invalid;
@@ -55,7 +59,7 @@ public class ValidityCheck
 
     public static class DateValidator {
     
-        public boolean isValid(String dateStr) {
+        public static boolean isValid(String dateStr) {
             try {
                 java.time.LocalDate.parse(dateStr, DateTimeFormatter.BASIC_ISO_DATE);
             } catch (DateTimeParseException e) {
