@@ -9,7 +9,7 @@
             "name": "Launch App",
             "request": "launch",
             "mainClass": "com.luhn.App",
-            "projectName": "demo",
+            "projectName": "ValidityCheck",
             "args": "190910799824"
         }
     ]
