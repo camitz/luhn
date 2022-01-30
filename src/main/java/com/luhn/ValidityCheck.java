@@ -96,9 +96,9 @@ class Result {
     }
 
     public static Result Invalid = new Result(false, NumberTypes.Undefined);
-    public static Result ValidPersonnummer = new Result(false, NumberTypes.Personummer);
-    public static Result ValidSamordningsnummer = new Result(false, NumberTypes.Samordningsnummer);
-    public static Result ValidOrganisationsnummer = new Result(false, NumberTypes.Organisationsnummer);
+    public static Result ValidPersonnummer = new Result(true, NumberTypes.Personummer);
+    public static Result ValidSamordningsnummer = new Result(true, NumberTypes.Samordningsnummer);
+    public static Result ValidOrganisationsnummer = new Result(true, NumberTypes.Organisationsnummer);
 
     @Override
     public boolean equals(Object o) {
