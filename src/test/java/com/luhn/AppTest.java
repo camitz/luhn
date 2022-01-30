@@ -26,7 +26,6 @@ public class AppTest
         assertEquals(Result.ValidPersonnummer, ValidityCheck.check("192109099180"));
         assertEquals(Result.ValidPersonnummer, ValidityCheck.check("4607137454"));
         assertEquals(Result.ValidPersonnummer, ValidityCheck.check("194510168885"));
-        assertEquals(Result.ValidPersonnummer, ValidityCheck.check("900118+9811"));
         assertEquals(Result.ValidPersonnummer, ValidityCheck.check("189102279800"));
         assertEquals(Result.ValidPersonnummer, ValidityCheck.check("189912299816"));
     }
@@ -36,6 +35,24 @@ public class AppTest
     {
         assertEquals(Result.ValidPersonnummer, ValidityCheck.check(" 141206-2380 "));
         assertEquals(Result.ValidPersonnummer, ValidityCheck.check("  201701102384  "));
+    }
+
+    @Test
+    public void centenaryCurveBalls()
+    {
+        assertEquals(Result.ValidPersonnummer, ValidityCheck.check("900118+9811"));
+        assertEquals(Result.ValidPersonnummer, ValidityCheck.check("2501102384"));
+        assertEquals(Result.ValidPersonnummer, ValidityCheck.check("250110+2384"));
+
+        assertEquals(Result.ValidPersonnummer, ValidityCheck.check("18900118+9811"));
+        assertEquals(Result.ValidPersonnummer, ValidityCheck.check("18250118+9811"));
+
+        assertEquals(Result.Invalid, ValidityCheck.check("19900118+9811"));
+
+        assertEquals(Result.ValidPersonnummer, ValidityCheck.check("20000229-1110"));
+        assertEquals(Result.Invalid, ValidityCheck.check("19000229-1110"));
+        assertEquals(Result.ValidPersonnummer, ValidityCheck.check("000229-1110"));
+        assertEquals(Result.Invalid, ValidityCheck.check("000229+1110"));
     }
 
     @Test

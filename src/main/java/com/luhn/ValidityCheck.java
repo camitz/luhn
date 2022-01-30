@@ -6,7 +6,7 @@ import java.time.format.*;
 
 public class ValidityCheck
 {
-    private static Pattern PnrPattern = Pattern.compile("^(?<cent>(1[689]|2\\d)?)(?<year>\\d{2})(?<month>0\\d|1[012]|[2-9]\\d)(?<day>[06][1-9]|[1278]\\d|[39][01]|\\d{2})[-+]?(?<last>\\d{4})$");
+    private static Pattern PnrPattern = Pattern.compile("^(?<cent>(1[689]|2\\d)?)(?<year>\\d{2})(?<month>0\\d|1[012]|[2-9]\\d)(?<day>[06][1-9]|[1278]\\d|[39][01]|\\d{2})(?<sep>[-+])?(?<last>\\d{4})$");
 
     public static Result check(String number)
     {
@@ -32,7 +32,11 @@ public class ValidityCheck
         if(day.compareTo("61") >= 0) 
             day = (Integer.parseInt(matcher.group("day")) - 60) + "";
 
-        if(!DateValidator.isValid(cent + matcher.group("year") + matcher.group("month") + day))
+        if(matcher.group("sep") != null && matcher.group("sep").compareTo("+") == 0) {
+            if(!DateValidator.isValid(cent + matcher.group("year") + matcher.group("month") + day, true))
+                return Result.Invalid;
+        }
+        else if(!DateValidator.isValid(cent + matcher.group("year") + matcher.group("month") + day, false))
             return Result.Invalid;
 
         if(Integer.parseInt(matcher.group("day")) >= 61)
@@ -60,15 +64,19 @@ public class ValidityCheck
         return t2 % 10 == 0;
     }
 
-    public static class DateValidator {
-        private final static String Today = DateTimeFormatter.BASIC_ISO_DATE.format(java.time.LocalDate.now()); 
+    public static class DateValidator {        
+        public static boolean isValid(String dateStr, boolean centenary) {
+            String refDate = DateTimeFormatter.BASIC_ISO_DATE.format(java.time.LocalDate.now()); 
+            if(centenary)
+                refDate = DateTimeFormatter.BASIC_ISO_DATE.format(java.time.LocalDate.now().plusYears(-100)); 
 
-        public static boolean isValid(String dateStr) {
-            if(dateStr.length()<8)
-                dateStr = Today.substring(0,1)+dateStr;
+            if(dateStr.length()<8) {
+                dateStr = refDate.substring(0,2)+dateStr;
 
-            if(dateStr.compareTo(Today)>0)
-                dateStr = (Integer.parseInt(Today.substring(0,1))-1) + dateStr;
+                if(dateStr.compareTo(refDate)>0)
+                    dateStr = (Integer.parseInt(refDate.substring(0,2))-1) + dateStr.substring(2);
+            } else if(centenary && dateStr.compareTo(refDate) > 0)
+                return false;
 
             try {
                 java.time.LocalDate.parse(dateStr, DateTimeFormatter.BASIC_ISO_DATE);
