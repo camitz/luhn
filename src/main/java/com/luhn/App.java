@@ -6,7 +6,7 @@ public class App
     {
         for (String number : args) 
         {
-            var result = ValidityCheck.check(number);
+            var result = new ValidityCheck().check(number);
             if(result.IsValid)
                 switch(result.NumberType) {
                     case Personummer:
